@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emerald Client</title>
+    <title>Emerald Client Dashboard</title>
     <style>
         * {
             box-sizing: border-box;
@@ -15,16 +15,17 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background-color: #000;
+            background-color: #00000000;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #fff;
         }
 
-        /* Container filling 100% of the screen */
+        /* Container filling 100% of screen */
         .app-container {
             position: relative;
             width: 100vw;
             height: 100vh;
+            overflow: hidden;
         }
 
         /* Floating header overlay over the iframe/content */
@@ -35,12 +36,8 @@
             transform: translateX(-50%);
             z-index: 9999;
             pointer-events: auto;
-            background: rgba(13, 13, 13, 0.75);
-            backdrop-filter: blur(8px);
-            padding: 6px 14px;
+            background: rgba(0, 0, 0, 0.788);
             border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
         /* Tab Navigation Bar */
@@ -66,7 +63,8 @@
             left: 2px;
             z-index: 9;
             border-radius: 999px;
-            transition: all 0.2s ease-out;
+            /* UPDATED EASING FOR SMOOTHER INDICATOR GLIDE */
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             pointer-events: none;
         }
 
@@ -121,23 +119,28 @@
         .tab--7:checked ~ .indicator { left: calc(130px * 6 + 2px); }
         .tab--8:checked ~ .indicator { left: calc(130px * 7 + 2px); }
 
-        /* Content Area Filling Entire Viewport */
+        /* --- SLIDING CAROUSEL CONTAINER --- */
         .tab-contents-wrapper {
+            display: flex;
+            width: 800vw; /* 8 tabs total: each 100vw wide */
+            height: 100vh;
             position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
             z-index: 1;
+            /* UPDATED FOR ULTRA SMOOTH ELASTIC SLIDE */
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
         }
 
         .tab-content {
-            display: none;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            position: relative;
         }
 
-        /* Full-screen Iframe */
+        /* Fullscreen Iframe */
         .full-iframe {
             width: 100%;
             height: 100%;
@@ -145,23 +148,37 @@
             display: block;
         }
 
-        /* Dynamic Tab Visibility */
-        .app-container:has(#tab1:checked) #content-tab1,
-        .app-container:has(#tab2:checked) #content-tab2,
-        .app-container:has(#tab3:checked) #content-tab3,
-        .app-container:has(#tab4:checked) #content-tab4,
-        .app-container:has(#tab5:checked) #content-tab5,
-        .app-container:has(#tab6:checked) #content-tab6,
-        .app-container:has(#tab7:checked) #content-tab7,
-        .app-container:has(#tab8:checked) #content-tab8 {
-            display: block;
+        /* --- DYNAMIC SLIDE POSITIONING --- */
+        .app-container:has(#tab1:checked) .tab-contents-wrapper {
+            transform: translateX(0vw);
+        }
+        .app-container:has(#tab2:checked) .tab-contents-wrapper {
+            transform: translateX(-100vw);
+        }
+        .app-container:has(#tab3:checked) .tab-contents-wrapper {
+            transform: translateX(-200vw);
+        }
+        .app-container:has(#tab4:checked) .tab-contents-wrapper {
+            transform: translateX(-300vw);
+        }
+        .app-container:has(#tab5:checked) .tab-contents-wrapper {
+            transform: translateX(-400vw);
+        }
+        .app-container:has(#tab6:checked) .tab-contents-wrapper {
+            transform: translateX(-500vw);
+        }
+        .app-container:has(#tab7:checked) .tab-contents-wrapper {
+            transform: translateX(-600vw);
+        }
+        .app-container:has(#tab8:checked) .tab-contents-wrapper {
+            transform: translateX(-700vw);
         }
 
-        /* Default styling for other text-based tabs */
+        /* Default padding for text-based content tabs */
         .tab-content:not(#content-tab1) {
-            padding-top: 80px;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding-top: 0px;
+            padding-left: 0px;
+            padding-right: 0px;
         }
     </style>
 </head>
@@ -199,7 +216,7 @@
             </div>
         </div>
 
-        <!-- FULLSCREEN CONTENT -->
+        <!-- HORIZONTAL SLIDING CONTENT WRAPPER -->
         <div class="tab-contents-wrapper">
             <!-- Tab 1: Pure Fullscreen Iframe -->
             <div id="content-tab1" class="tab-content">
@@ -211,37 +228,51 @@
                 </iframe>
             </div>
 
-            <!-- Other Tabs -->
+            <!-- Tab 2 -->
             <div id="content-tab2" class="tab-content">
-                <h2>HUD GUI Content</h2>
-                <p>Add your custom code, components, or HTML here.</p>
+                <iframe 
+                    class="full-iframe"
+                    src="https://rafihacker025.github.io/67hud/" 
+                    allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation">
+                </iframe>
             </div>
 
+            <!-- Tab 3 -->
             <div id="content-tab3" class="tab-content">
                 <h2>Scripts Content</h2>
                 <p>Add your custom code, components, or HTML here.</p>
             </div>
 
+            <!-- Tab 4 -->
             <div id="content-tab4" class="tab-content">
                 <h2>Mods Content</h2>
                 <p>Add your custom code, components, or HTML here.</p>
             </div>
 
+            <!-- Tab 5 -->
             <div id="content-tab5" class="tab-content">
                 <h2>Changelogs Content</h2>
                 <p>Add your custom code, components, or HTML here.</p>
             </div>
 
+            <!-- Tab 6 -->
             <div id="content-tab6" class="tab-content">
-                <h2>AI Tab Content</h2>
-                <p>Add your custom code, components, or HTML here.</p>
+                <iframe 
+                    class="full-iframe" style="width: 90%; height: 90%; border-radius: 30px; position: center; margin: auto; display: block;"
+                    src="https://rafihacker025.github.io/fekaibsapp/" 
+                    allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation">
+                </iframe>
             </div>
 
+            <!-- Tab 7 -->
             <div id="content-tab7" class="tab-content">
                 <h2>Configs Content</h2>
                 <p>Add your custom code, components, or HTML here.</p>
             </div>
 
+            <!-- Tab 8 -->
             <div id="content-tab8" class="tab-content">
                 <h2>Settings Content</h2>
                 <p>Add your custom code, components, or HTML here.</p>
