@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emerald Client</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #fff;
+        }
+
+        /* Container filling 100% of the screen */
+        .app-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Floating header overlay over the iframe/content */
+        .header-bar {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: auto;
+            background: rgba(13, 13, 13, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Tab Navigation Bar */
+        .tab-container {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: fit-content;
+            height: 26px;
+            margin: 0 auto;
+            background-color: rgba(51, 255, 153, 0.15);
+            border-radius: 900px;
+        }
+
+        .indicator {
+            content: "";
+            width: 130px;
+            height: 20px;
+            background: rgba(51, 255, 153, 0.6);
+            position: absolute;
+            top: 3px;
+            left: 2px;
+            z-index: 9;
+            border-radius: 999px;
+            transition: all 0.2s ease-out;
+            pointer-events: none;
+        }
+
+        .tab {
+            width: 130px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 99;
+            outline: none;
+            opacity: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .tab_label {
+            width: 130px;
+            height: 100%;
+            position: relative;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            font-size: 0.75rem;
+            font-weight: bold;
+            opacity: 0.8;
+            cursor: pointer;
+            user-select: none;
+            line-height: 1;
+            color: #fff;
+        }
+
+        /* Tab Positions */
+        .tab--1 { left: 0; }
+        .tab--2 { left: 130px; }
+        .tab--3 { left: calc(130px * 2); }
+        .tab--4 { left: calc(130px * 3); }
+        .tab--5 { left: calc(130px * 4); }
+        .tab--6 { left: calc(130px * 5); }
+        .tab--7 { left: calc(130px * 6); }
+        .tab--8 { left: calc(130px * 7); }
+
+        /* Indicator Animations */
+        .tab--1:checked ~ .indicator { left: 2px; }
+        .tab--2:checked ~ .indicator { left: calc(130px + 2px); }
+        .tab--3:checked ~ .indicator { left: calc(130px * 2 + 2px); }
+        .tab--4:checked ~ .indicator { left: calc(130px * 3 + 2px); }
+        .tab--5:checked ~ .indicator { left: calc(130px * 4 + 2px); }
+        .tab--6:checked ~ .indicator { left: calc(130px * 5 + 2px); }
+        .tab--7:checked ~ .indicator { left: calc(130px * 6 + 2px); }
+        .tab--8:checked ~ .indicator { left: calc(130px * 7 + 2px); }
+
+        /* Content Area Filling Entire Viewport */
+        .tab-contents-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Full-screen Iframe */
+        .full-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Dynamic Tab Visibility */
+        .app-container:has(#tab1:checked) #content-tab1,
+        .app-container:has(#tab2:checked) #content-tab2,
+        .app-container:has(#tab3:checked) #content-tab3,
+        .app-container:has(#tab4:checked) #content-tab4,
+        .app-container:has(#tab5:checked) #content-tab5,
+        .app-container:has(#tab6:checked) #content-tab6,
+        .app-container:has(#tab7:checked) #content-tab7,
+        .app-container:has(#tab8:checked) #content-tab8 {
+            display: block;
+        }
+
+        /* Default styling for other text-based tabs */
+        .tab-content:not(#content-tab1) {
+            padding-top: 80px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- FLOATING OVERLAY MENU -->
+        <div class="header-bar">
+            <div class="tab-container">
+                <input type="radio" name="tab" id="tab1" class="tab tab--1" checked />
+                <label class="tab_label" for="tab1">CLICK GUI</label>
+
+                <input type="radio" name="tab" id="tab2" class="tab tab--2" />
+                <label class="tab_label" for="tab2">HUD GUI</label>
+
+                <input type="radio" name="tab" id="tab3" class="tab tab--3" />
+                <label class="tab_label" for="tab3">SCRIPTS</label>
+
+                <input type="radio" name="tab" id="tab4" class="tab tab--4" />
+                <label class="tab_label" for="tab4">MODS</label>
+
+                <input type="radio" name="tab" id="tab5" class="tab tab--5" />
+                <label class="tab_label" for="tab5">CHANGELOGS</label>
+
+                <input type="radio" name="tab" id="tab6" class="tab tab--6" />
+                <label class="tab_label" for="tab6">AI TAB</label>
+
+                <input type="radio" name="tab" id="tab7" class="tab tab--7" />
+                <label class="tab_label" for="tab7">CONFIGS</label>
+
+                <input type="radio" name="tab" id="tab8" class="tab tab--8" />
+                <label class="tab_label" for="tab8">SETTINGS</label>
+
+                <div class="indicator"></div>
+            </div>
+        </div>
+
+        <!-- FULLSCREEN CONTENT -->
+        <div class="tab-contents-wrapper">
+            <!-- Tab 1: Pure Fullscreen Iframe -->
+            <div id="content-tab1" class="tab-content">
+                <iframe 
+                    class="full-iframe"
+                    src="https://rafihacker025.github.io/emeraldclient/" 
+                    allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation">
+                </iframe>
+            </div>
+
+            <!-- Other Tabs -->
+            <div id="content-tab2" class="tab-content">
+                <h2>HUD GUI Content</h2>
+                <p>Add your custom code, components, or HTML here.</p>
+            </div>
+
+            <div id="content-tab3" class="tab-content">
+                <h2>Scripts Content</h2>
+                <p>Add your custom code, components, or HTML here.</p>
+            </div>
+
+            <div id="content-tab4" class="tab-content">
+                <h2>Mods Content</h2>
+                <p>Add your custom code, components, or HTML here.</p>
+            </div>
+
+            <div id="content-tab5" class="tab-content">
+                <h2>Changelogs Content</h2>
+                <p>Add your custom code, components, or HTML here.</p>
+            </div>
+
+            <div id="content-tab6" class="tab-content">
+                <h2>AI Tab Content</h2>
+                <p>Add your custom code, components, or HTML here.</p>
+            </div>
+
+            <div id="content-tab7" class="tab-content">
+                <h2>Configs Content</h2>
+                <p>Add your custom code, components, or HTML here.</p>
+            </div>
+
+            <div id="content-tab8" class="tab-content">
+                <h2>Settings Content</h2>
+                <p>Add your custom code, components, or HTML here.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
